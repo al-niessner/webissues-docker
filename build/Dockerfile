@@ -37,12 +37,12 @@ RUN { \
 
 VOLUME /var/www/html
 
-ENV APP_VERSION 1.1.5
+ARG APP_VERSION="2.0.1"
 ENV CHK_INSTALL data/sites/default/config.inc.php 
 
 RUN mkdir -p /usr/src/app && \
-    curl -o app.tar.bz2 -fSL https://downloads.sourceforge.net/webissues/webissues-server-${APP_VERSION}.tar.bz2 && \
-    tar -xjvf app.tar.bz2 -C /usr/src/app --strip=1 && \
+    curl -o app.tar.gz -fSL https://github.com/mimecorg/webissues/releases/download/v${APP_VERSION}/webissues-server-${APP_VERSION}.tar.gz && \
+    tar -xzvf app.tar.gz -C /usr/src/app --strip=1 && \
     chown -R www-data:www-data /usr/src/app
 
 RUN mkdir -p /etc/nginx/conf.d

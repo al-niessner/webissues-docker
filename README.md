@@ -20,7 +20,7 @@ docker-compose up -d
 docker-compose logs
 ```
 
-### point your browser to: http://localhost:8084/admin/setup/install.php
+### point your browser to: http://localhost:8084
 * Database Host Name:     db
 * Database Name:          webissues
 * Database User Name:     webissues
