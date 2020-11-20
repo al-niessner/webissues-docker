@@ -4,12 +4,12 @@ services:
     ##################################################
     # BUILD section
     ##################################################
-    build:
-      context: ./build
-      dockerfile: Dockerfile
-      args:
-        APP_VERSION: 2.0.1
-        BUILD_TZ: Europe/Berlin
+    #build:
+    #  context: ./build
+    #  dockerfile: Dockerfile
+    #  args:
+    #    APP_VERSION: 2.0.1
+    #    BUILD_TZ: Europe/Berlin
     ##################################################
     # RUN section
     ##################################################
