@@ -1,29 +1,32 @@
-# webissues in Docker
+# webissues
 
-## content:
-* webissues (based on php:5.6-fpm-alpine)
-* nginx 
-* mysql
+## build
+
+```
+docker compose build
+docker buildx bake [--push]
+```
 
 ## installation 
 
-### build image and start a container
-```
-git clone https://github.com/unimock/webissues-docker.git ./webissues
-cd ./webissues
-cp docker-compose.yml-template docker-compose.yml
-vi docker-compose.yml
-cp .env-template .env
-vi .env
-docker-compose build
-docker-compose up -d
-docker-compose logs
-```
-
-### point your browser to: http://localhost:8084
+### point browser to: http://localhost:8084/admin/setup/install.php
 * Database Host Name:     db
 * Database Name:          webissues
 * Database User Name:     webissues
 * Database User Password: geheim
+
+
+### export/import/mainten DB
+
+```
+docker exec -it webissues-db-1 bash
+mysql -u webissues -p
+mysql> use webissues
+mysql> DROP VIEW effective_rights;
+mysql> exit
+
+mysqldump --no-tablespaces -uwebissues -p webissues > /var/lib/mysql/backup.dump
+mysql -uwebissues -p webissues                      < /var/lib/mysql/backup.dump
+```
 
 

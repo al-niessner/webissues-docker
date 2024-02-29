@@ -1,78 +1,30 @@
-version: '2'
+version: '3'
 services:
-  app:
-    ##################################################
-    # BUILD section
-    ##################################################
-    #build:
-    #  context: ./build
-    #  dockerfile: Dockerfile
-    #  args:
-    #    APP_VERSION: 2.0.1
-    #    BUILD_TZ: Europe/Berlin
-    ##################################################
-    # RUN section
-    ##################################################
-    depends_on:
-      - db
-    image: ${DC_ENV_IMAGE}
-    links:
-      - db
-    restart: always
-    container_name: ${DC_ENV_NAME}
-    hostname: ${DC_ENV_NAME}
-    expose:
-       - '9000'
-    environment:
-      APP_DB_HOST: db:3306
-      APP_DB_NAME: ${DC_ENV_DB_NAME}
-      APP_DB_USER: ${DC_ENV_DB_USER}
-      APP_DB_PASS: ${DC_ENV_DB_PASS}
-    volumes:
-      - "./persistent/html:/var/www/html"
-    networks:
-      - default
-  #######################################################################
-  nginx:
-    image: nginx:1-alpine
-    restart: always
-#    expose:
-#      - "80"
+  webissues:
+    build:
+      context: ./build
+      dockerfile: Dockerfile
+      args:
+        APP_VERSION: 2.0.5
+      x-bake:
+        platforms:
+          - linux/amd64
+          - linux/arm64
+    image: unimock/webissues-docker:2.0.5-2
+    restart: unless-stopped
     ports:
-       - "8084:80"
-    volumes_from:
-      - app
+      - "8084:80"
+    environment:
+      WI_URL: https://localhost:8084
     volumes:
-      - ./logs/${DC_ENV_NAME}:/var/log/nginx
-    links:
-        - app
-    restart: always
-#    labels:
-#      - traefik.enable=true
-#      - traefik.frontend.rule=Host:${DC_ENV_FQDN}
-#      - traefik.port=80
-#      - traefik.docker.network=traefik_default
-    networks:
-      - default
-#      - traefik_default
-  #######################################################################
+      - ./var-data:/var/www/html/data
   db:
     image: mysql:5.7
-    volumes:
-      - "./persistent/mysql:/var/lib/mysql"
-    restart: always
+    restart: unless-stopped
     environment:
-      - TZ=Europe/Berlin
-      - MYSQL_RANDOM_ROOT_PASSWORD=yes
-      - MYSQL_DATABASE=${DC_ENV_DB_NAME}
-      - MYSQL_USER=${DC_ENV_DB_USER}
-      - MYSQL_PASSWORD=${DC_ENV_DB_PASS}
-    networks:
-      - default
-  #######################################################################
-networks:
-  default:
-#  traefik_default:
-#    external: true
-
-
+      MYSQL_ROOT_PASSWORD: MeinPassword
+      MYSQL_DATABASE: webissues
+      MYSQL_USER: webissues
+      MYSQL_PASSWORD: passwd
+    volumes:
+      - ./var-mysql:/var/lib/mysql
