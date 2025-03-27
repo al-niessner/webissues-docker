@@ -1,0 +1,30 @@
+services:
+  webissues:
+    build:
+      context: ./build
+      dockerfile: Dockerfile
+      args:
+        APP_VERSION: 2.0.5
+      x-bake:
+        platforms:
+          - linux/amd64
+          - linux/arm64
+    image: esp/webissues-docker:latest
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+      - "8443:443"
+    environment:
+      WI_URL: https://localhost:8000
+    volumes:
+      - ./var-data:/var/www/html/data
+  db:
+    image: mysql:9.2
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: MeinPassword
+      MYSQL_DATABASE: webissues
+      MYSQL_USER: webissues
+      MYSQL_PASSWORD: passwd
+    volumes:
+      - ./var-mysql:/var/lib/mysql
